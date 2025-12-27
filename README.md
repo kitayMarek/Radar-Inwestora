@@ -138,3 +138,13 @@ Sugestie i zgłoszenia błędów mile widziane!
 
 
 *Powodzenia w inwestowaniu!* 📈
+
+<img width="987" height="1080" alt="Radar1" src="https://github.com/user-attachments/assets/0224e208-3e37-49fb-a157-3eaf556b3a19" />
+<img width="1163" height="1080" alt="Radar2" src="https://github.com/user-attachments/assets/1f0884d6-3d4e-4362-b7cc-8f56ec2b2bf9" />
+<img width="1163" height="1080" alt="Radar3" src="https://github.com/user-attachments/assets/e202ef12-48e5-4665-93e1-28ca6e1a3fc2" />
+<img width="1162" height="1080" alt="Radar4" src="https://github.com/user-attachments/assets/2f924f22-cfb5-4060-b89a-55b6b616a04e" />
+<img width="1166" height="1080" alt="Radar5" src="https://github.com/user-attachments/assets/4c19b78a-2b9b-46ab-a2e0-c023d6052eaf" />
+
+
+
+
