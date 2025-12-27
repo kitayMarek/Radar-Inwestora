@@ -47,6 +47,8 @@ TRANSLATIONS = {
         "search_in": "Szukaj newsów w:",
         "add_phrase": "➕ Dodaj Nową Frazę",
         "phrase": "Fraza:",
+        "ticker": "Ticker:",
+        "ticker_hint": "(np. AAPL, TSLA)",
         "priority": "Priorytet:",
         "category": "Kategoria:",
         "filters_pos": "Filtry (+):",
@@ -99,13 +101,17 @@ TRANSLATIONS = {
 ───────────────────────────────────────────────────────────
 1. Wybierz region (np. POLSKA, USA, UK)
 2. Dodaj frazę do monitorowania (np. "Apple" lub "Tesla")
-3. Ustaw priorytet:
+3. OPCJONALNIE: Dodaj ticker (np. AAPL, TSLA)
+   ⚠️ WAŻNE: Ticker jest wymagany dla Yahoo Finance i Seeking Alpha!
+   • Google News używa frazy (nazwy firmy)
+   • Yahoo Finance i Seeking Alpha używają tickera
+4. Ustaw priorytet:
    • CRITICAL - najważniejsze (czerwony, głośny alarm)
    • HIGH - ważne (pomarańczowy)
    • MEDIUM - standardowe (niebieski)
    • LOW - mniej ważne (szary)
-4. Wybierz kategorię (Portfolio, Watchlist, Sektor...)
-5. Kliknij "DODAJ FRAZĘ"
+5. Wybierz kategorię (Portfolio, Watchlist, Sektor...)
+6. Kliknij "DODAJ FRAZĘ"
 
 Aplikacja automatycznie skanuje co 10 minut!
 
@@ -118,6 +124,21 @@ Aplikacja automatycznie skanuje co 10 minut!
 ✓ Filtry pozytywne (+) i negatywne (-)
 ✓ Eksport historii do CSV
 ✓ Statystyki i analiza trendów
+
+📈 TICKER vs FRAZA
+───────────────────────────────────────────────────────────
+• FRAZA: Nazwa firmy (np. "Apple", "Microsoft")
+  → Używana przez Google News
+  
+• TICKER: Symbol giełdowy (np. AAPL, MSFT)
+  → Wymagany dla Yahoo Finance i Seeking Alpha
+  → Zawsze wielkie litery (automatycznie)
+  
+Przykład:
+  Fraza: "Apple"
+  Ticker: AAPL
+  
+Bez tickera tylko Google News będzie skanowane!
 
 🎯 FILTRY
 ───────────────────────────────────────────────────────────
@@ -231,6 +252,8 @@ Kliknij przycisk poniżej aby wesprzeć projekt! 💚
         "search_in": "Search news in:",
         "add_phrase": "➕ Add New Phrase",
         "phrase": "Phrase:",
+        "ticker": "Ticker:",
+        "ticker_hint": "(e.g. AAPL, TSLA)",
         "priority": "Priority:",
         "category": "Category:",
         "filters_pos": "Filters (+):",
@@ -283,13 +306,17 @@ Kliknij przycisk poniżej aby wesprzeć projekt! 💚
 ───────────────────────────────────────────────────────────
 1. Select region (e.g., USA, UK, POLAND)
 2. Add a phrase to monitor (e.g., "Apple" or "Tesla")
-3. Set priority:
+3. OPTIONAL: Add ticker (e.g., AAPL, TSLA)
+   ⚠️ IMPORTANT: Ticker is required for Yahoo Finance and Seeking Alpha!
+   • Google News uses phrase (company name)
+   • Yahoo Finance and Seeking Alpha use ticker
+4. Set priority:
    • CRITICAL - most important (red, loud alarm)
    • HIGH - important (orange)
    • MEDIUM - standard (blue)
    • LOW - less important (gray)
-4. Choose category (Portfolio, Watchlist, Sector...)
-5. Click "ADD PHRASE"
+5. Choose category (Portfolio, Watchlist, Sector...)
+6. Click "ADD PHRASE"
 
 The app automatically scans every 10 minutes!
 
@@ -302,6 +329,21 @@ The app automatically scans every 10 minutes!
 ✓ Positive (+) and negative (-) filters
 ✓ Export history to CSV
 ✓ Statistics and trend analysis
+
+📈 TICKER vs PHRASE
+───────────────────────────────────────────────────────────
+• PHRASE: Company name (e.g., "Apple", "Microsoft")
+  → Used by Google News
+  
+• TICKER: Stock symbol (e.g., AAPL, MSFT)
+  → Required for Yahoo Finance and Seeking Alpha
+  → Always uppercase (automatic)
+  
+Example:
+  Phrase: "Apple"
+  Ticker: AAPL
+  
+Without ticker, only Google News will be scanned!
 
 🎯 FILTERS
 ───────────────────────────────────────────────────────────
@@ -586,9 +628,14 @@ class RadarApp:
         frame_input.pack(fill='x', padx=10, pady=5)
         
         tk.Label(frame_input, text=self.t("phrase")).grid(row=0, column=0, sticky='w', padx=5, pady=2)
-        self.entry_fraza = tk.Entry(frame_input, width=30)
+        self.entry_fraza = tk.Entry(frame_input, width=25)
         self.entry_fraza.grid(row=0, column=1, padx=5, pady=2)
         self.entry_fraza.bind('<Return>', lambda e: self.dodaj_fraze())
+        
+        tk.Label(frame_input, text=self.t("ticker")).grid(row=1, column=0, sticky='w', padx=5, pady=2)
+        self.entry_ticker = tk.Entry(frame_input, width=10)
+        self.entry_ticker.grid(row=1, column=1, sticky='w', padx=5, pady=2)
+        tk.Label(frame_input, text=self.t("ticker_hint"), font=("Arial", 8)).grid(row=1, column=1, sticky='e', padx=5)
         
         tk.Label(frame_input, text=self.t("priority")).grid(row=0, column=2, sticky='w', padx=5)
         self.combo_priorytet = ttk.Combobox(frame_input, values=list(PRIORYTETY.keys()), 
@@ -603,21 +650,21 @@ class RadarApp:
         self.combo_kategoria.grid(row=0, column=5, padx=5)
         
         # Filtry
-        tk.Label(frame_input, text=self.t("filters_pos")).grid(row=1, column=0, sticky='w', padx=5, pady=2)
-        self.entry_filtry_poz = tk.Entry(frame_input, width=30)
-        self.entry_filtry_poz.grid(row=1, column=1, padx=5, pady=2)
-        tk.Label(frame_input, text=self.t("separate_commas")).grid(row=1, column=2, columnspan=2, sticky='w')
+        tk.Label(frame_input, text=self.t("filters_pos")).grid(row=2, column=0, sticky='w', padx=5, pady=2)
+        self.entry_filtry_poz = tk.Entry(frame_input, width=25)
+        self.entry_filtry_poz.grid(row=2, column=1, padx=5, pady=2)
+        tk.Label(frame_input, text=self.t("separate_commas")).grid(row=2, column=2, columnspan=2, sticky='w')
         
-        tk.Label(frame_input, text=self.t("filters_neg")).grid(row=2, column=0, sticky='w', padx=5, pady=2)
-        self.entry_filtry_neg = tk.Entry(frame_input, width=30)
-        self.entry_filtry_neg.grid(row=2, column=1, padx=5, pady=2)
-        tk.Label(frame_input, text=self.t("exclude_words")).grid(row=2, column=2, columnspan=2, sticky='w')
+        tk.Label(frame_input, text=self.t("filters_neg")).grid(row=3, column=0, sticky='w', padx=5, pady=2)
+        self.entry_filtry_neg = tk.Entry(frame_input, width=25)
+        self.entry_filtry_neg.grid(row=3, column=1, padx=5, pady=2)
+        tk.Label(frame_input, text=self.t("exclude_words")).grid(row=3, column=2, columnspan=2, sticky='w')
         
-        tk.Label(frame_input, text=self.t("min_sentiment")).grid(row=2, column=4, sticky='w', padx=5)
+        tk.Label(frame_input, text=self.t("min_sentiment")).grid(row=3, column=4, sticky='w', padx=5)
         self.entry_min_sentiment = tk.Entry(frame_input, width=8)
         self.entry_min_sentiment.insert(0, "-1.0")
-        self.entry_min_sentiment.grid(row=2, column=5, padx=5)
-        tk.Label(frame_input, text="(-1.0 to 1.0)").grid(row=2, column=6, sticky='w')
+        self.entry_min_sentiment.grid(row=3, column=5, padx=5)
+        tk.Label(frame_input, text="(-1.0 to 1.0)").grid(row=3, column=6, sticky='w')
         
         btn_dodaj = tk.Button(frame_input, text=self.t("add_phrase_btn"), command=self.dodaj_fraze, 
                              bg="#90EE90", font=("Arial", 9, "bold"))
@@ -880,6 +927,7 @@ class RadarApp:
         
         priorytet = self.combo_priorytet.get()
         kategoria = self.combo_kategoria.get()
+        ticker = self.entry_ticker.get().strip().upper()  # Ticker zawsze uppercase
         
         filtry_poz = [f.strip() for f in self.entry_filtry_poz.get().split(',') if f.strip()]
         filtry_neg = [f.strip() for f in self.entry_filtry_neg.get().split(',') if f.strip()]
@@ -892,6 +940,7 @@ class RadarApp:
         
         fraza_obj = {
             'fraza': fraza,
+            'ticker': ticker,  # Dodany ticker
             'priorytet': priorytet,
             'kategoria': kategoria,
             'filtry_pozytywne': filtry_poz,
@@ -904,6 +953,7 @@ class RadarApp:
         self.odswiez_liste_gui()
         
         self.entry_fraza.delete(0, tk.END)
+        self.entry_ticker.delete(0, tk.END)
         self.entry_filtry_poz.delete(0, tk.END)
         self.entry_filtry_neg.delete(0, tk.END)
         
@@ -930,8 +980,13 @@ class RadarApp:
             prio = fraza_obj['priorytet']
             kat = fraza_obj['kategoria']
             fraza = fraza_obj['fraza']
+            ticker = fraza_obj.get('ticker', '')
             
-            tekst = f"[{prio}] [{kat}] {fraza}"
+            # Dodaj ticker do wyświetlania jeśli istnieje
+            if ticker:
+                tekst = f"[{prio}] [{kat}] {fraza} (${ticker})"
+            else:
+                tekst = f"[{prio}] [{kat}] {fraza}"
             
             if fraza_obj.get('filtry_pozytywne'):
                 tekst += f" +({','.join(fraza_obj['filtry_pozytywne'])})"
@@ -1140,6 +1195,7 @@ class RadarApp:
                         break
                     
                     fraza = fraza_obj['fraza']
+                    ticker = fraza_obj.get('ticker', '')  # Pobierz ticker
                     priorytet = fraza_obj['priorytet']
                     
                     self.log(f"🔍 {self.t('scanning_progress')}: {fraza} [{priorytet}]")
@@ -1149,15 +1205,35 @@ class RadarApp:
                         if not source_config['enabled']:
                             continue
                         
-                        # Google News
+                        url = None
+                        
+                        # Google News - używa frazy (nazwy firmy)
                         if source_config['type'] == 'google':
                             fraza_encoded = urllib.parse.quote_plus(fraza)
                             url = f"https://news.google.com/rss/search?q={fraza_encoded}&{self.wybrany_region_kod}"
-                        else:
-                            continue  # Yahoo i Seeking Alpha wymagają specjalnej obsługi
+                        
+                        # Yahoo Finance - używa tickera
+                        elif source_config['type'] == 'yahoo':
+                            if not ticker:
+                                continue  # Pomiń jeśli brak tickera
+                            url = f"https://finance.yahoo.com/rss/headline?s={ticker}"
+                        
+                        # Seeking Alpha - używa tickera
+                        elif source_config['type'] == 'seekingalpha':
+                            if not ticker:
+                                continue  # Pomiń jeśli brak tickera
+                            url = f"https://seekingalpha.com/symbol/{ticker}.xml"
+                        
+                        if not url:
+                            continue
                         
                         try:
+                            self.log(f"  → Scanning {source_name}...")
                             feed = feedparser.parse(url)
+                            
+                            news_count = len(feed.entries[:5])
+                            if news_count > 0:
+                                self.log(f"  ✓ Found {news_count} articles from {source_name}")
                             
                             for news in feed.entries[:5]:
                                 # Sprawdź duplikaty
@@ -1414,3 +1490,4 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = RadarApp(root)
     root.mainloop()
+
