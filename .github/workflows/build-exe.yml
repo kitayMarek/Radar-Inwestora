@@ -4,32 +4,34 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pyinstaller
-          pip install yfinance pandas
-      
-      - name: Build EXE
-        run: |
-          pyinstaller --onefile --windowed --name "Radar_Inwestora_v4_3" radar_v4_3.py
-      
-      - name: Upload EXE to Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/Radar_Inwestora_v4_3.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+        pip install yfinance pandas feedparser winotify textblob
+    
+    - name: Build EXE
+      run: |
+        pyinstaller --onefile --windowed --name "Radar_Inwestora_v4_3" --hidden-import=feedparser --hidden-import=winotify --hidden-import=textblob --hidden-import=yfinance radar_v4_3.py
+    
+    - name: Upload EXE to Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist/Radar_Inwestora_v4_3.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
